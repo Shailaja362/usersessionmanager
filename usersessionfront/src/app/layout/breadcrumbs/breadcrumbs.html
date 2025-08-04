@@ -1,0 +1,25 @@
+<div class="w-full">
+     <div class="flex flex-wrap items-center justify-between">
+       <div class="flex items-center">
+        <a *ngIf="bcdata?.back" [routerLink]="bcdata.back" class="text-gray-600 hover:text-green-900 me-2">
+          <i class="bx bx-left-arrow-alt text-2xl"></i>
+        </a>
+        <h4 class="text-lg font-semibold text-gray-800">{{ bcdata.page_title }}</h4>
+      </div>
+
+       <div *ngIf="(bcdata?.links || []).length > 0" class="text-sm text-gray-500">
+        <ol class="flex flex-wrap gap-2">
+          <li *ngFor="let link of bcdata.links"
+              class="flex items-center"
+              [ngClass]="{ 'font-semibold text-gray-800': link.active_link }">
+
+            <ng-container *ngIf="link.link; else plainText">
+              <a [routerLink]="link.link" class="hover:underline">{{ link.page }}</a>
+            </ng-container>
+            <ng-template #plainText>{{ link.page }}</ng-template>
+          </li>
+        </ol>
+      </div>
+    </div>
+
+</div>

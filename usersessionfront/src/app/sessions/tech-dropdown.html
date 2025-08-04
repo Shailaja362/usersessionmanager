@@ -1,0 +1,6 @@
+<select [formControl]="ctrl" (blur)="onBlur()"
+  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-700"
+>
+  <option value="" disabled>Select Tech</option>
+  <option *ngFor="let tech of techs" [value]="tech">{{ tech }}</option>
+</select>

@@ -1,0 +1,42 @@
+<form [formGroup]="form" (ngSubmit)="login()"
+  class="max-w-md mx-auto mt-20 p-5 bg-white shadow-lg rounded-lg space-y-4">
+  <h2 class="text-xl font-semibold text-center">Sign In</h2>
+
+  <div *ngIf="loginError" class="text-sm text-red-600 text-center bg-red-100 border border-red-400 p-2 rounded">
+    {{ loginError }}
+  </div>
+
+  <div>
+    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+    <input id="email" type="email" formControlName="email" autocomplete="email" placeholder="Enter your email" class="mt-1 block w-full px-4 py-2 border rounded-md shadow-sm text-sm
+           focus:ring-blue-500 focus:border-blue-500 border-gray-300"
+      [class.border-red-500]="form.get('email')?.invalid && form.get('email')?.touched" />
+    <div *ngIf="form.get('email')?.touched && form.get('email')?.errors as errors" class="text-sm text-red-600 mt-1">
+      <div *ngIf="errors['required']">Email is required.</div>
+      <div *ngIf="errors['email']">Enter a valid email address.</div>
+    </div>
+  </div>
+
+  <div>
+    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+    <input id="password" type="password" formControlName="password" autocomplete="current-password"
+      placeholder="Enter your password" class="mt-1 block w-full px-4 py-2 border rounded-md shadow-sm text-sm
+           focus:ring-blue-500 focus:border-blue-500 border-gray-300"
+      [class.border-red-500]="form.get('password')?.invalid && form.get('password')?.touched" />
+    <div *ngIf="form.get('password')?.touched && form.get('password')?.errors as errors"
+      class="text-sm text-red-600 mt-1">
+      <div *ngIf="errors['required']">Password is required.</div>
+    </div>
+  </div>
+
+  <button type="submit"
+    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300">
+    Sign In
+  </button>
+
+<div class="text-center text-sm text-gray-600">
+  Don’t have an account?
+  <a routerLink="/register" class="text-blue-600 hover:underline font-medium">Sign up</a>
+</div>
+
+</form>
