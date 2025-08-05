@@ -1,32 +1,24 @@
-import fs from 'fs';
+import { db } from './db/index';
+import { users } from './db/schema';
 
-const USERS_FILE = './users.json';
-const SESSION_FILE = './sessions.json';
 
 export interface User {
   id: number,
-  email: string;
-  password: string;
+  name: string,
+  email: string,
+  password: string,
+  createdAt: Date,
+  updatedAt: Date
 }
 
-export function getUsers(): User[] {
-  if (!fs.existsSync(USERS_FILE)) return [];
-  return JSON.parse(fs.readFileSync(USERS_FILE, 'utf-8'));
+
+export async function getUsers() {
+   return await db.select().from(users);
 }
 
-export function saveUser(user: Omit<User, 'id'>): User {
-  const users = getUsers();
-  const maxId = users.length > 0
-    ? Math.max(...users.map(u => u.id ?? 0))
-    : 0;
-  const newUser: User = {
-    id: maxId + 1,
-    ...user,
-  };
-  users.push(newUser);
-  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
-
-  return newUser;
+export async function saveUser(user: Omit<typeof users.$inferInsert, 'id'>) {
+  const inserted = await db.insert(users).values(user).returning();
+  return inserted[0];
 }
 
 

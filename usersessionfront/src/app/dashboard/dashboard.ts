@@ -45,7 +45,6 @@ export class Dashboard implements OnInit {
     this.sessionService.getUserEmail().subscribe({
       next: (res) => {
         this.userEmail = res.useremail;
-        console.log('test',res.useremail);
         this.cdr.detectChanges();
       },
       error: (err) => {

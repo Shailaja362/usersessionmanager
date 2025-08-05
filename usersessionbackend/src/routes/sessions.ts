@@ -3,11 +3,11 @@ import { getSessions, saveSession, deleteSessionById, AuthenticatedRequest } fro
 import { sessionSchema } from '../schemas/session.schema';
 
 interface Session {
-  id?: number;
-  userId: number;
-  date: string;
-  techStack: string;
-  topics: string[];
+  id?: number,
+  userId: number,
+  date: string,
+  techStack: string,
+  topics: string[]
 }
 
 
@@ -48,10 +48,11 @@ const sessionRoutes: Plugin<null> = {
       method: 'GET',
       path: '/sessions/list',
       options: { auth: 'jwt' },
-      handler: (request, h) => {
+      handler: async (request, h) => {
         const authRequest = request as unknown as AuthenticatedRequest;
         const loggedInUserId = authRequest.auth.credentials.user.id;
-        const allSessions = getSessions();
+        const allSessions = await getSessions();
+        console.log(allSessions);
         const userSessions = allSessions.filter(s => s.userId === loggedInUserId);
 
         return h.response(userSessions).code(200);
@@ -62,9 +63,9 @@ const sessionRoutes: Plugin<null> = {
       method: 'DELETE',
       path: '/sessions/{id}',
       options: { auth: 'jwt' },
-      handler: (request, h) => {
+      handler: async (request, h) => {
         const id = Number(request.params.id);
-        deleteSessionById(id);
+        await deleteSessionById(id);
         return h.response({ message: 'Session deleted successfully' }).code(200);
       }
     });
@@ -73,7 +74,7 @@ const sessionRoutes: Plugin<null> = {
       method: 'GET',
       path: '/userget',
       options: { auth: 'jwt' },
-      handler: (request, h) => {
+      handler: async (request, h) => {
         const authRequest = request as unknown as AuthenticatedRequest;
         const useremail = authRequest.auth.credentials.user.email;
         return h.response({ useremail }).type('application/json').code(200);

@@ -12,26 +12,51 @@ const authRoutes: Plugin<{}> = {
         method: 'POST',
         path: '/signup',
         options: { auth: false },
-        handler: (request, h) => {
-          const parseResult = authSchema.safeParse(request.payload);
-          if (!parseResult.success) {
-            return h
-              .response({ errors: parseResult.error.flatten().fieldErrors })
-              .code(400);
-          }
-          const { email, password } = parseResult.data;
-          const users = getUsers();
-          const existingUser = users.find(user => user.email === email);
+        // handler: (request, h) => {
+        //   const parseResult = authSchema.safeParse(request.payload);
+        //   if (!parseResult.success) {
+        //     return h
+        //       .response({ errors: parseResult.error.flatten().fieldErrors })
+        //       .code(400);
+        //   }
+        //   const { email, password } = parseResult.data;
+        //   const users = getUsers();
+        //   console.log(users,'users');
+        //   const existingUser = users.find(user => user.email === email);
 
-          if (existingUser) {
-            return h
-              .response({ error: 'Email already exists' })
-              .code(409);
-          }
+        //   if (existingUser) {
+        //     return h
+        //       .response({ error: 'Email already exists' })
+        //       .code(409);
+        //   }
 
-          saveUser({ email, password });
-          return h.response({ success: true }).code(201);
-        }
+        //   saveUser({ email, password });
+        //   return h.response({ success: true }).code(201);
+        // }
+        handler: async (request, h) => {
+  const parseResult = authSchema.safeParse(request.payload);
+
+  if (!parseResult.success) {
+    return h
+      .response({ errors: parseResult.error.flatten().fieldErrors })
+      .code(400);
+  }
+
+   const { name, email, password } = parseResult.data;
+   const users = await getUsers();
+   const existingUser = users.find((user) => user.email === email);
+
+  if (existingUser) {
+    return h
+      .response({ error: 'Email already exists' })
+      .code(409);
+  }
+
+   await saveUser({ name, email, password });
+
+  return h.response({ success: true }).code(201);
+}
+
       },
       {
         method: 'POST',
@@ -39,7 +64,7 @@ const authRoutes: Plugin<{}> = {
         options: {
           auth: false
         },
-        handler: (request, h) => {
+        handler: async (request, h) => {
           const secretKey = process.env.JWT_SECRET;
 
           if (!secretKey) {
@@ -53,7 +78,7 @@ const authRoutes: Plugin<{}> = {
           }
 
           const { email, password } = parseResult.data;
-          const users = getUsers();
+          const users = await getUsers();
           const user = users.find(u => u.email === email);
 
           if (!user || user.password !== password) {
@@ -63,6 +88,7 @@ const authRoutes: Plugin<{}> = {
           const token = Jwt.token.generate(
             {
               id: user.id,
+              name:user.name,
               email: user.email,
               password: user.password
             },

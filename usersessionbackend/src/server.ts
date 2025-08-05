@@ -42,11 +42,8 @@ const init = async () => {
   });
 
   server.auth.default('jwt'); 
-
   await server.register([authRoutes, sessionRoutes]);
-
   await server.start();
-  console.log('Server running on', server.info.uri);
 };
 
 init();

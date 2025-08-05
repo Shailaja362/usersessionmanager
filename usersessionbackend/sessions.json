@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "date": "2025-08-30",
+    "techStack": "Angular",
+    "topics": [
+      "@Component",
+      "@NgModule",
+      "@Injectable",
+      "@FormControl"
+    ],
+    "userId": 1
+  }
+]

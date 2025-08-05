@@ -55,7 +55,6 @@ export class SessionForm {
       }
     });
   } else {
-    console.log('else condition');
     this.form.markAllAsTouched();
   }
 }

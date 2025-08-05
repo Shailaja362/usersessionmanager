@@ -12,7 +12,7 @@ export class AuthService {
     return this.http.post('http://localhost:3000/signin', data);
   }
 
-  register(data: { email: string; password: string }): Observable<any> {
+  register(data: { name: string; email: string; password: string }): Observable<any> {
     return this.http.post('http://localhost:3000/signup', data);
   }
 

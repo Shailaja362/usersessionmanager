@@ -19,6 +19,7 @@ export class Register {
     private router: Router
   ) {
     this.form = this.fb.group({
+      name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
       confirmPassword: ['', [Validators.required]]
@@ -34,21 +35,28 @@ export class Register {
   register() {
     if (this.form.invalid) return;
 
-    const { email, password, confirmPassword } = this.form.value;
+    const { name, email, password, confirmPassword } = this.form.value;
 
     if (password !== confirmPassword) {
       this.form.setErrors({ mismatch: true });
       return;
     }
 
-    this.auth.register({ email, password }).subscribe({
+    this.auth.register({name, email, password }).subscribe({
       next: () => {
         this.router.navigate(['/login']);
       },
       error: (err) => {
-        const message =
-          err.error.errors.password ||
-          (typeof err.error.error === 'string' ? err.error.error : null);
+         const message =
+          (Array.isArray(err?.error?.errors?.password) && err.error.errors.password.length > 0
+            ? err.error.errors.password[0]
+            : null) ||
+          (typeof err?.error?.error === 'string' && err.error.error.trim() !== ''
+            ? err.error.error
+            : null) || (Array.isArray(err?.error?.errors?.name) && err.error.errors.name.length > 0
+            ? err.error.errors.name[0]
+            : null)
+          'Something went wrong';
         this.form.setErrors({ serverError: message });
       }
     });
@@ -56,6 +64,10 @@ export class Register {
 
   get email(): FormControl {
     return this.form.get('email') as FormControl;
+  }
+
+  get name(): FormControl {
+    return this.form.get('name') as FormControl;
   }
 
   get password(): FormControl {
